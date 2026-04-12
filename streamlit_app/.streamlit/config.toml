@@ -4,3 +4,10 @@ backgroundColor     = "#F5F3EF"
 secondaryBackgroundColor = "#EDEAE3"
 textColor           = "#2C2A27"
 font                = "sans serif"
+
+[client]
+showSidebarNavigation = true
+
+[ui]
+hideTopBar = false
+hideSidebarNav = false
