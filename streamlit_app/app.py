@@ -91,13 +91,6 @@ html, body, [class*="css"], .stMarkdown, .stButton, .stTextInput, .stNumberInput
 .stDeployButton { display: none !important; }
 [data-testid="stToolbar"] { display: none !important; }
 
-/* ── Hide sidebar toggle button on mobile, show on desktop ── */
-@media (max-width: 768px) {
-  [data-testid="collapsedControl"] {
-    display: none !important;
-  }
-}
-
 /* ── Main container ── */
 .main .block-container {
   max-width: 660px !important;
