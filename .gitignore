@@ -23,8 +23,10 @@ wheels/
 .installed.cfg
 *.egg
 
-# Streamlit
+# Streamlit secrets (contains credentials — never commit)
+streamlit_app/.streamlit/secrets.toml
 .streamlit/secrets.toml
+.streamlit/secrets.toml.example
 
 # Environment variables (contains sensitive credentials)
 .env
