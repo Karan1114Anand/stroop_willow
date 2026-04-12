@@ -25,6 +25,7 @@ wheels/
 
 # Streamlit secrets (contains credentials — never commit)
 streamlit_app/.streamlit/secrets.toml
+streamlit_app/.streamlit/secrets.toml.example
 .streamlit/secrets.toml
 .streamlit/secrets.toml.example
 
