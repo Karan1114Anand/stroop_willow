@@ -1,0 +1,63 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Session {
+  session_id         String   @id @default(uuid())
+  participant_id     String
+  started_at         DateTime @default(now())
+  completed_at       DateTime?
+
+  mean_rt_block1      Float?
+  mean_rt_block2      Float?
+  mean_rt_block3      Float?
+  overall_mean_rt     Float?
+  time_constraint_ms  Float?
+
+  accuracy_block1     Float?
+  accuracy_block2     Float?
+  accuracy_block3     Float?
+  missed_count_block3 Int?
+
+  trials Trial[]
+
+  @@index([started_at])
+  @@index([participant_id])
+  @@map("sessions")
+}
+
+model Trial {
+  id                Int      @id @default(autoincrement())
+  session_id        String
+  participant_id    String
+  created_at        DateTime @default(now())
+  block_number      Int
+  block_type        String
+  trial_number      Int
+  word_shown        String
+  ink_color         String
+  user_response     String?
+  outcome           String
+  reaction_time_ms  Int?
+
+  session Session @relation(fields: [session_id], references: [session_id])
+
+  @@index([session_id])
+  @@index([participant_id])
+  @@index([created_at])
+  @@map("trials")
+}
+
+model Settings {
+  id                        Int      @id @default(autoincrement())
+  time_reduction_ms         Int      @default(120)
+  updated_at                DateTime @updatedAt
+  updated_by                String   @default("system")
+
+  @@map("settings")
+}
