@@ -22,9 +22,9 @@ import db
 # ─────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="Stroop Color-Word Test",
-    page_icon="🧠",
+    page_icon="🐈",
     layout="centered",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="auto",  
 )
 
 # ─────────────────────────────────────────────────────────
@@ -87,9 +87,15 @@ html, body, [class*="css"], .stMarkdown, .stButton, .stTextInput, .stNumberInput
 }
 
 /* ── Hide Streamlit chrome ── */
-#MainMenu, footer, header { visibility: hidden; }
+##MainMenu, footer { visibility: hidden; }
 .stDeployButton { display: none !important; }
 [data-testid="stToolbar"] { display: none !important; }
+
+/* keep header visible so sidebar toggle can work */
+header {
+  visibility: visible !important;
+  background: transparent !important;
+}
 
 /* ── Main container ── */
 .main .block-container {
