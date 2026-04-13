@@ -5,10 +5,7 @@ Run:   streamlit run app.py
 Admin: click "Admin" in the sidebar
 """
 import os
-import json
-import threading
 from datetime import date
-from http.server import BaseHTTPRequestHandler, HTTPServer
 
 import bcrypt
 import pandas as pd
@@ -18,13 +15,21 @@ import streamlit.components.v1 as components
 import db
 
 # ─────────────────────────────────────────────────────────
+# Declared component (bidirectional — works locally & on Streamlit Cloud)
+# ─────────────────────────────────────────────────────────
+_stroop_component = components.declare_component(
+    "stroop_test",
+    path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "stroop_component"),
+)
+
+# ─────────────────────────────────────────────────────────
 # Page config
 # ─────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="Stroop Color-Word Test",
     page_icon="🐈",
     layout="centered",
-    initial_sidebar_state="auto",  
+    initial_sidebar_state="collapsed",
 )
 
 # ─────────────────────────────────────────────────────────
@@ -245,59 +250,6 @@ hr { border-color: #D8D3C8 !important; margin: 1.2rem 0 !important; }
 </script>
 """)
 
-# ─────────────────────────────────────────────────────────
-# Background HTTP server — receives test results from JS
-# ─────────────────────────────────────────────────────────
-_API_PORT = 8599
-_server_started = False
-
-
-class _ResultHandler(BaseHTTPRequestHandler):
-    def do_OPTIONS(self):
-        self.send_response(200)
-        self._cors()
-        self.end_headers()
-
-    def do_POST(self):
-        try:
-            length = int(self.headers.get("Content-Length", 0))
-            body = json.loads(self.rfile.read(length))
-            sid  = body.get("session_id", "")
-            pid  = body.get("participant_id", "")
-            db.save_trials(sid, pid, body.get("trials", []))
-            db.complete_session(sid, body.get("summary", {}))
-            self.send_response(200)
-            self._cors()
-            self.send_header("Content-Type", "application/json")
-            self.end_headers()
-            self.wfile.write(b'{"ok":true}')
-        except Exception as e:
-            self.send_response(500)
-            self._cors()
-            self.end_headers()
-            self.wfile.write(json.dumps({"error": str(e)}).encode())
-
-    def _cors(self):
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")
-
-    def log_message(self, *_): pass
-
-
-def _start_api_server():
-    global _server_started
-    if _server_started:
-        return
-    try:
-        server = HTTPServer(("localhost", _API_PORT), _ResultHandler)
-        threading.Thread(target=server.serve_forever, daemon=True).start()
-        _server_started = True
-    except OSError:
-        _server_started = True   # already running (hot-reload)
-
-
-_start_api_server()
 
 # ─────────────────────────────────────────────────────────
 # Session state defaults
@@ -383,24 +335,6 @@ def generate_csv(sessions: list) -> bytes:
         ]))
     return "\r\n".join(lines).encode("utf-8")
 
-
-# ─────────────────────────────────────────────────────────
-# Test HTML builder
-# ─────────────────────────────────────────────────────────
-def _build_test_html(session_id: str, participant_id: str, time_reduction_ms: int) -> str:
-    html_path = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), "stroop_component", "index.html"
-    )
-    template = open(html_path, encoding="utf-8").read()
-    config_js = f"""<script>
-  window.STROOP_CONFIG = {{
-    session_id:       {json.dumps(session_id)},
-    participant_id:   {json.dumps(participant_id)},
-    time_reduction_ms:{int(time_reduction_ms)},
-    api_url:          "http://localhost:{_API_PORT}/submit"
-  }};
-</script>"""
-    return template.replace("</head>", config_js + "\n</head>", 1)
 
 
 # ─────────────────────────────────────────────────────────
@@ -508,17 +442,27 @@ Example: if you see <span style="color:#2471A3;font-weight:600">RED</span>, pres
 
 
 def page_test():
-    if st.query_params.get("test_done") == "1":
-        st.query_params.clear()
-        go_to("done")
-        return
-
     sid = st.session_state.session_id or ""
     pid = st.session_state.participant_id or ""
+
+    if not sid:
+        go_to("consent")
+        return
+
     time_reduction_ms = db.get_time_reduction_ms()
 
-    html = _build_test_html(sid, pid, time_reduction_ms)
-    components.html(html, height=740, scrolling=False)
+    result = _stroop_component(
+        session_id=sid,
+        participant_id=pid,
+        time_reduction_ms=int(time_reduction_ms),
+        key=f"stroop_test_{sid}",
+    )
+
+    if isinstance(result, dict) and result.get("done"):
+        with st.spinner("Saving results…"):
+            db.save_trials(sid, pid, result.get("trials", []))
+            db.complete_session(sid, result.get("summary", {}))
+        go_to("done")
 
 
 def page_done():

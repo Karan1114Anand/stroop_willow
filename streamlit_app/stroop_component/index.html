@@ -581,7 +581,7 @@
        ================================================================ */
     const CFG = window.STROOP_CONFIG || {
       session_id: "test", participant_id: "TEST",
-      time_reduction_ms: 120, api_url: "http://localhost:8599/submit"
+      time_reduction_ms: 120
     };
 
     /* ================================================================
@@ -874,29 +874,55 @@
 
     function finishTest() {
       show("s-saving");
-      fetch(CFG.api_url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          session_id: CFG.session_id,
-          participant_id: CFG.participant_id,
-          trials: allTrials,
-          summary: computeSummary(),
-        }),
-      })
-        .then(() => { window.parent.location.href = window.parent.location.pathname + "?test_done=1"; })
-        .catch(err => {
-          // Even on save failure, show a friendly completion message
-          document.querySelector(".spinner").style.display = "none";
-          document.querySelector(".saving-box h2").textContent = "Thank you for taking the test!";
-          document.getElementById("saving-msg").textContent = "Your responses have been recorded. Please let the researcher know you have finished.";
-        });
+      var payload = {
+        done: true,
+        session_id: CFG.session_id,
+        participant_id: CFG.participant_id,
+        trials: allTrials,
+        summary: computeSummary()
+      };
+      // Return data to Streamlit via component API (works locally and on Streamlit Cloud)
+      window.parent.postMessage(
+        { isStreamlitMessage: true, type: "streamlit:setComponentValue", value: payload, dataType: "json" },
+        "*"
+      );
     }
 
     /* ================================================================
-       Boot
+       Boot — Streamlit component API + standalone fallback
        ================================================================ */
-    setupIntro();
+    var _booted = false;
+
+    function _boot(streamlitArgs) {
+      if (_booted) return;
+      _booted = true;
+      if (streamlitArgs) {
+        if (streamlitArgs.session_id)     CFG.session_id       = streamlitArgs.session_id;
+        if (streamlitArgs.participant_id) CFG.participant_id   = streamlitArgs.participant_id;
+        if (typeof streamlitArgs.time_reduction_ms === "number")
+          CFG.time_reduction_ms = streamlitArgs.time_reduction_ms;
+      }
+      // Tell Streamlit the iframe height
+      window.parent.postMessage(
+        { isStreamlitMessage: true, type: "streamlit:setFrameHeight", height: 740 }, "*"
+      );
+      setupIntro();
+    }
+
+    // Listen for Streamlit render events (carries session config as args)
+    window.addEventListener("message", function(e) {
+      if (e.data && e.data.type === "streamlit:render") {
+        _boot(e.data.args || {});
+      }
+    });
+
+    // Signal ready to Streamlit
+    window.parent.postMessage(
+      { isStreamlitMessage: true, type: "streamlit:componentReady", apiVersion: 1 }, "*"
+    );
+
+    // Fallback: boot standalone if no render event arrives within 300 ms
+    setTimeout(function() { _boot(null); }, 300);
   </script>
 </body>
 
