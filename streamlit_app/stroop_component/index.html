@@ -581,7 +581,7 @@
        ================================================================ */
     const CFG = window.STROOP_CONFIG || {
       session_id: "test", participant_id: "TEST",
-      time_reduction_ms: 120
+      time_reduction_pct: 20
     };
 
     /* ================================================================
@@ -834,7 +834,7 @@
           .filter(t => t.block_number === 2 && t.reaction_time_ms !== null)
           .map(t => t.reaction_time_ms);
         timeLimit = rts.length
-          ? Math.max(200, Math.round(rts.reduce((a, b) => a + b, 0) / rts.length - CFG.time_reduction_ms))
+          ? Math.max(200, Math.round(rts.reduce((a, b) => a + b, 0) / rts.length * (1 - CFG.time_reduction_pct / 100)))
           : 1500;
       }
       block < 2 ? showBreak() : finishTest();
@@ -899,8 +899,8 @@
       if (streamlitArgs) {
         if (streamlitArgs.session_id)     CFG.session_id       = streamlitArgs.session_id;
         if (streamlitArgs.participant_id) CFG.participant_id   = streamlitArgs.participant_id;
-        if (typeof streamlitArgs.time_reduction_ms === "number")
-          CFG.time_reduction_ms = streamlitArgs.time_reduction_ms;
+        if (typeof streamlitArgs.time_reduction_pct === "number")
+          CFG.time_reduction_pct = streamlitArgs.time_reduction_pct;
       }
       // Tell Streamlit the iframe height
       window.parent.postMessage(

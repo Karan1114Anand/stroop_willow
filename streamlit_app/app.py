@@ -96,11 +96,14 @@ html, body, [class*="css"], .stMarkdown, .stButton, .stTextInput, .stNumberInput
 .stDeployButton { display: none !important; }
 [data-testid="stToolbar"] { display: none !important; }
 
-/* keep header visible so sidebar toggle can work */
 header {
   visibility: visible !important;
   background: transparent !important;
 }
+
+/* ── Hide sidebar collapse/toggle buttons — sidebar is always visible ── */
+[data-testid="stSidebarCollapseButton"] { display: none !important; }
+[data-testid="collapsedControl"]        { display: none !important; }
 
 /* ── Main container ── */
 .main .block-container {
@@ -204,31 +207,6 @@ hr { border-color: #D8D3C8 !important; margin: 1.2rem 0 !important; }
   border-color: #7C6FA0 !important;
 }
 
-/* ── Sidebar re-open button (visible when sidebar is collapsed) ── */
-[data-testid="collapsedControl"] {
-  width: 44px !important;
-  height: 44px !important;
-  background: #7C6FA0 !important;
-  border-radius: 10px !important;
-  margin-top: 14px !important;
-  margin-left: 8px !important;
-  box-shadow: 0 3px 12px rgba(124,111,160,0.40) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  transition: background 0.2s !important;
-  cursor: pointer !important;
-}
-[data-testid="collapsedControl"]:hover {
-  background: #5A4F7A !important;
-}
-[data-testid="collapsedControl"] svg {
-  color: #fff !important;
-  fill: #fff !important;
-}
-[data-stroop-theme="dark"] [data-testid="collapsedControl"] {
-  background: #9C8FC0 !important;
-}
 
 /* ── Eyebrow label helper ── */
 .eyebrow {
@@ -446,12 +424,12 @@ def page_test():
         go_to("consent")
         return
 
-    time_reduction_ms = db.get_time_reduction_ms()
+    time_reduction_pct = db.get_time_reduction_pct()
 
     result = _stroop_component(
         session_id=sid,
         participant_id=pid,
-        time_reduction_ms=int(time_reduction_ms),
+        time_reduction_pct=int(time_reduction_pct),
         key=f"stroop_test_{sid}",
     )
 
@@ -595,7 +573,7 @@ def page_admin_settings():
             go_to("admin_dashboard")
 
     st.divider()
-    current = db.get_time_reduction_ms()
+    current_pct = db.get_time_reduction_pct()
 
     st.markdown("""
 <div style="background:#EDEAE3;border:1px solid #D8D3C8;border-radius:10px;
@@ -603,19 +581,22 @@ def page_admin_settings():
 <strong style="color:#2C2A27">Block 3 adaptive time limit</strong><br>
 <code style="background:#fff;border:1px solid #D8D3C8;border-radius:4px;padding:2px 8px;
              font-size:12px;color:#5A4F7A">
-  time_limit = Section 2 mean RT − time_reduction &nbsp;(min 200 ms)
+  Time Limit = Baseline RT &times; (1 &minus; X) &nbsp;(min 200 ms)
 </code><br>
-A larger reduction → shorter limit → more cognitive pressure.
+<em>Baseline RT</em> = participant's mean reaction time in Section 2 &nbsp;|&nbsp;
+<em>X</em> = percentage reduction below.<br>
+A higher % → shorter limit → more cognitive pressure.
 </div>
 """, unsafe_allow_html=True)
 
-    new_val = st.number_input(
-        "Time Reduction (ms)",
-        min_value=50, max_value=5000, value=current, step=10,
+    new_pct = st.slider(
+        "Percentage Reduction (X)",
+        min_value=0, max_value=50, value=current_pct, step=1,
+        format="%d%%",
     )
     if st.button("Save", type="primary", use_container_width=True):
-        db.update_time_reduction_ms(int(new_val), st.session_state.admin_username or "admin")
-        st.success(f"Saved — time_reduction = {new_val} ms")
+        db.update_time_reduction_pct(int(new_pct), st.session_state.admin_username or "admin")
+        st.success(f"Saved — time_reduction = {new_pct}%")
 
 
 # ─────────────────────────────────────────────────────────
@@ -630,10 +611,14 @@ with st.sidebar:
   );
 </script>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: transparent !important; }
+  .sw-wrap, .sw-wrap *, .sw-wrap *::before, .sw-wrap *::after {
+    box-sizing: border-box;
+  }
 
-  .sw-wrap  { padding: 12px 2px 18px 2px; }
+  .sw-wrap {
+    padding: 12px 2px 18px 2px;
+    background: transparent;
+  }
   .sw-inner { display: flex; align-items: center; gap: 11px; }
 
   .sw-text  {

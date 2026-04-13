@@ -4,7 +4,9 @@ Connects to the same Neon PostgreSQL database used by the Next.js app.
 """
 import os
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
+
+IST = timezone(timedelta(hours=5, minutes=30))
 
 import psycopg2
 import psycopg2.extras
@@ -48,7 +50,7 @@ def create_session() -> tuple[str, str]:
             cur.execute(
                 "INSERT INTO sessions (session_id, participant_id, started_at)"
                 " VALUES (%s, %s, %s)",
-                (session_id, participant_id, datetime.now(timezone.utc)),
+                (session_id, participant_id, datetime.now(IST)),
             )
     return session_id, participant_id
 
@@ -82,7 +84,7 @@ def save_trials(session_id: str, participant_id: str, trials: list) -> None:
                         t.get("user_response"),
                         t["outcome"],
                         t.get("reaction_time_ms"),
-                        datetime.now(timezone.utc),
+                        datetime.now(IST),
                     ),
                 )
 
@@ -107,7 +109,7 @@ def complete_session(session_id: str, summary: dict) -> None:
                 WHERE session_id = %s
                 """,
                 (
-                    datetime.now(timezone.utc),
+                    datetime.now(IST),
                     summary.get("mean_rt_block1"),
                     summary.get("mean_rt_block2"),
                     summary.get("mean_rt_block3"),
@@ -170,38 +172,43 @@ def get_sessions(start_date=None, end_date=None) -> list[dict]:
     return sessions
 
 
-def get_time_reduction_ms() -> int:
-    """Return the current time_reduction_ms setting (default 120)."""
+def get_time_reduction_pct() -> int:
+    """Return the current time_reduction_pct setting (default 20)."""
     try:
         with get_connection() as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT time_reduction_ms FROM settings ORDER BY id LIMIT 1")
-                row = cur.fetchone()
-                if row:
-                    return int(row["time_reduction_ms"])
-                # Seed default row
                 cur.execute(
-                    "INSERT INTO settings (time_reduction_ms, updated_by) VALUES (120, 'system')"
-                    " RETURNING time_reduction_ms"
+                    "ALTER TABLE settings ADD COLUMN IF NOT EXISTS time_reduction_pct INTEGER DEFAULT 20"
                 )
-                return 120
+                cur.execute("SELECT time_reduction_pct FROM settings ORDER BY id LIMIT 1")
+                row = cur.fetchone()
+                if row and row["time_reduction_pct"] is not None:
+                    return int(row["time_reduction_pct"])
+                cur.execute(
+                    "INSERT INTO settings (time_reduction_pct, updated_by) VALUES (20, 'system')"
+                    " RETURNING time_reduction_pct"
+                )
+                return 20
     except Exception:
-        return 120
+        return 20
 
 
-def update_time_reduction_ms(value: int, updated_by: str = "admin") -> None:
-    """Upsert the time_reduction_ms setting."""
+def update_time_reduction_pct(value: int, updated_by: str = "admin") -> None:
+    """Upsert the time_reduction_pct setting."""
     with get_connection() as conn:
         with conn.cursor() as cur:
+            cur.execute(
+                "ALTER TABLE settings ADD COLUMN IF NOT EXISTS time_reduction_pct INTEGER DEFAULT 20"
+            )
             cur.execute("SELECT id FROM settings ORDER BY id LIMIT 1")
             row = cur.fetchone()
             if row:
                 cur.execute(
-                    "UPDATE settings SET time_reduction_ms=%s, updated_at=NOW(), updated_by=%s WHERE id=%s",
+                    "UPDATE settings SET time_reduction_pct=%s, updated_at=NOW(), updated_by=%s WHERE id=%s",
                     (value, updated_by, row["id"]),
                 )
             else:
                 cur.execute(
-                    "INSERT INTO settings (time_reduction_ms, updated_by) VALUES (%s, %s)",
+                    "INSERT INTO settings (time_reduction_pct, updated_by) VALUES (%s, %s)",
                     (value, updated_by),
                 )
