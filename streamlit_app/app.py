@@ -204,34 +204,8 @@ hr { border-color: #D8D3C8 !important; margin: 1.2rem 0 !important; }
   border-color: #7C6FA0 !important;
 }
 
-/* ── Sidebar toggle button (hamburger) ── */
-[data-testid="collapsedControl"] {
-  width: 52px !important;
-  height: 52px !important;
-  background: #7C6FA0 !important;
-  border-radius: 12px !important;
-  margin-top: 12px !important;
-  margin-left: 8px !important;
-  box-shadow: 0 4px 14px rgba(124,111,160,0.45) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  transition: background 0.2s, box-shadow 0.2s !important;
-}
-[data-testid="collapsedControl"]:hover {
-  background: #5A4F7A !important;
-  box-shadow: 0 6px 20px rgba(124,111,160,0.55) !important;
-}
-[data-testid="collapsedControl"] svg {
-  width: 22px !important;
-  height: 22px !important;
-  color: #fff !important;
-  fill: #fff !important;
-}
-[data-stroop-theme="dark"] [data-testid="collapsedControl"] {
-  background: #9C8FC0 !important;
-  box-shadow: 0 4px 14px rgba(156,143,192,0.35) !important;
-}
+/* ── Hide Streamlit's default sidebar toggle (replaced by custom button) ── */
+[data-testid="collapsedControl"] { display: none !important; }
 
 /* ── Eyebrow label helper ── */
 .eyebrow {
@@ -702,11 +676,12 @@ components.html("""
 (function() {
   var P = window.parent.document;
 
-  // ── Button style (once) ──
+  // ── Button styles (once) ──
   if (!P.getElementById('stroop-btn-style')) {
     var bs = P.createElement('style');
     bs.id = 'stroop-btn-style';
     bs.textContent =
+      // Theme toggle (top-right)
       '#stroop-theme-btn{position:fixed;top:14px;right:14px;z-index:99999;' +
       'background:#fff;border:1px solid #D8D3C8;border-radius:8px;' +
       'width:36px;height:36px;font-size:17px;cursor:pointer;' +
@@ -715,9 +690,55 @@ components.html("""
       'line-height:1;border:none;}' +
       '#stroop-theme-btn:hover{background:#EDEAE3;}' +
       '[data-stroop-theme="dark"] #stroop-theme-btn{background:#2C2A27;border:1px solid #3A3733;color:#E8E4DC;}' +
-      '[data-stroop-theme="dark"] #stroop-theme-btn:hover{background:#3A3733;}';
+      '[data-stroop-theme="dark"] #stroop-theme-btn:hover{background:#3A3733;}' +
+      // Sidebar toggle (top-left) — always visible
+      '#stroop-sb-btn{position:fixed;top:14px;left:14px;z-index:99999;' +
+      'width:40px;height:40px;background:#7C6FA0;border:none;border-radius:10px;' +
+      'color:#fff;font-size:20px;line-height:1;cursor:pointer;' +
+      'display:flex;align-items:center;justify-content:center;' +
+      'box-shadow:0 3px 12px rgba(124,111,160,0.40);transition:background 0.2s,box-shadow 0.2s;}' +
+      '#stroop-sb-btn:hover{background:#5A4F7A;box-shadow:0 5px 18px rgba(124,111,160,0.55);}' +
+      '[data-stroop-theme="dark"] #stroop-sb-btn{background:#9C8FC0;}' +
+      '[data-stroop-theme="dark"] #stroop-sb-btn:hover{background:#7C6FA0;}';
     P.head.appendChild(bs);
   }
+
+  // ── Sidebar toggle button (re-create each render) ──
+  var oldSb = P.getElementById('stroop-sb-btn');
+  if (oldSb) oldSb.remove();
+
+  var sbBtn = P.createElement('button');
+  sbBtn.id = 'stroop-sb-btn';
+  sbBtn.title = 'Toggle navigation panel';
+  sbBtn.innerHTML = '&#9776;'; // ☰
+
+  sbBtn.onclick = function() {
+    var sidebar = P.querySelector('[data-testid="stSidebar"]');
+    if (!sidebar) return;
+    var rect = sidebar.getBoundingClientRect();
+    var isOpen = rect.right > 40;
+    if (!isOpen) {
+      // Open: click Streamlit's collapsedControl (briefly un-hide it)
+      var cc = P.querySelector('[data-testid="collapsedControl"]');
+      if (cc) {
+        cc.style.cssText = 'display:flex!important;';
+        cc.click();
+        setTimeout(function() { cc.style.cssText = ''; }, 50);
+      }
+    } else {
+      // Close: find the top-area button inside the sidebar header
+      var btns = P.querySelectorAll('[data-testid="stSidebar"] button');
+      for (var i = 0; i < btns.length; i++) {
+        var br = btns[i].getBoundingClientRect();
+        if (br.top < 90 && br.width > 0 && br.height > 0) { btns[i].click(); return; }
+      }
+      // Fallback: slide sidebar out via transform
+      sidebar.style.cssText = 'transform:translateX(-110%);transition:transform 0.3s ease;';
+      setTimeout(function() { sidebar.style.cssText = ''; }, 350);
+    }
+  };
+
+  P.body.appendChild(sbBtn);
 
   // ── Full dark-mode stylesheet (once) ──
   if (!P.getElementById('stroop-dark-style')) {
