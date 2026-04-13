@@ -29,7 +29,7 @@ st.set_page_config(
     page_title="Stroop Color-Word Test",
     page_icon="🐈",
     layout="centered",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="expanded",
 )
 
 # ─────────────────────────────────────────────────────────
@@ -204,8 +204,31 @@ hr { border-color: #D8D3C8 !important; margin: 1.2rem 0 !important; }
   border-color: #7C6FA0 !important;
 }
 
-/* ── Hide Streamlit's default sidebar toggle (replaced by custom button) ── */
-[data-testid="collapsedControl"] { display: none !important; }
+/* ── Sidebar re-open button (visible when sidebar is collapsed) ── */
+[data-testid="collapsedControl"] {
+  width: 44px !important;
+  height: 44px !important;
+  background: #7C6FA0 !important;
+  border-radius: 10px !important;
+  margin-top: 14px !important;
+  margin-left: 8px !important;
+  box-shadow: 0 3px 12px rgba(124,111,160,0.40) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: background 0.2s !important;
+  cursor: pointer !important;
+}
+[data-testid="collapsedControl"]:hover {
+  background: #5A4F7A !important;
+}
+[data-testid="collapsedControl"] svg {
+  color: #fff !important;
+  fill: #fff !important;
+}
+[data-stroop-theme="dark"] [data-testid="collapsedControl"] {
+  background: #9C8FC0 !important;
+}
 
 /* ── Eyebrow label helper ── */
 .eyebrow {
@@ -690,55 +713,9 @@ components.html("""
       'line-height:1;border:none;}' +
       '#stroop-theme-btn:hover{background:#EDEAE3;}' +
       '[data-stroop-theme="dark"] #stroop-theme-btn{background:#2C2A27;border:1px solid #3A3733;color:#E8E4DC;}' +
-      '[data-stroop-theme="dark"] #stroop-theme-btn:hover{background:#3A3733;}' +
-      // Sidebar toggle (top-left) — always visible
-      '#stroop-sb-btn{position:fixed;top:14px;left:14px;z-index:99999;' +
-      'width:40px;height:40px;background:#7C6FA0;border:none;border-radius:10px;' +
-      'color:#fff;font-size:20px;line-height:1;cursor:pointer;' +
-      'display:flex;align-items:center;justify-content:center;' +
-      'box-shadow:0 3px 12px rgba(124,111,160,0.40);transition:background 0.2s,box-shadow 0.2s;}' +
-      '#stroop-sb-btn:hover{background:#5A4F7A;box-shadow:0 5px 18px rgba(124,111,160,0.55);}' +
-      '[data-stroop-theme="dark"] #stroop-sb-btn{background:#9C8FC0;}' +
-      '[data-stroop-theme="dark"] #stroop-sb-btn:hover{background:#7C6FA0;}';
+      '[data-stroop-theme="dark"] #stroop-theme-btn:hover{background:#3A3733;}';
     P.head.appendChild(bs);
   }
-
-  // ── Sidebar toggle button (re-create each render) ──
-  var oldSb = P.getElementById('stroop-sb-btn');
-  if (oldSb) oldSb.remove();
-
-  var sbBtn = P.createElement('button');
-  sbBtn.id = 'stroop-sb-btn';
-  sbBtn.title = 'Toggle navigation panel';
-  sbBtn.innerHTML = '&#9776;'; // ☰
-
-  sbBtn.onclick = function() {
-    var sidebar = P.querySelector('[data-testid="stSidebar"]');
-    if (!sidebar) return;
-    var rect = sidebar.getBoundingClientRect();
-    var isOpen = rect.right > 40;
-    if (!isOpen) {
-      // Open: click Streamlit's collapsedControl (briefly un-hide it)
-      var cc = P.querySelector('[data-testid="collapsedControl"]');
-      if (cc) {
-        cc.style.cssText = 'display:flex!important;';
-        cc.click();
-        setTimeout(function() { cc.style.cssText = ''; }, 50);
-      }
-    } else {
-      // Close: find the top-area button inside the sidebar header
-      var btns = P.querySelectorAll('[data-testid="stSidebar"] button');
-      for (var i = 0; i < btns.length; i++) {
-        var br = btns[i].getBoundingClientRect();
-        if (br.top < 90 && br.width > 0 && br.height > 0) { btns[i].click(); return; }
-      }
-      // Fallback: slide sidebar out via transform
-      sidebar.style.cssText = 'transform:translateX(-110%);transition:transform 0.3s ease;';
-      setTimeout(function() { sidebar.style.cssText = ''; }, 350);
-    }
-  };
-
-  P.body.appendChild(sbBtn);
 
   // ── Full dark-mode stylesheet (once) ──
   if (!P.getElementById('stroop-dark-style')) {
