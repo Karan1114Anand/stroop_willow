@@ -1,49 +1,58 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Stroop Color-Word Test</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap"
+    rel="stylesheet">
   <style>
     /* ── Light theme ── */
     :root {
-      --bg:           #F5F3EF;
-      --surface:      #EDEAE3;
-      --border:       #D8D3C8;
-      --text:         #2C2A27;
-      --text-muted:   #7A7670;
-      --accent:       #7C6FA0;
+      --bg: #F5F3EF;
+      --surface: #EDEAE3;
+      --border: #D8D3C8;
+      --text: #2C2A27;
+      --text-muted: #7A7670;
+      --accent: #7C6FA0;
       --accent-light: #EDE9F5;
-      --accent-dark:  #5A4F7A;
-      --card-bg:      #FFFFFF;
-      --col-red:      #C0392B;
-      --col-blue:     #2471A3;
-      --col-green:    #1E8449;
-      --col-yellow:   #C9A800;
-      --shadow:       rgba(0,0,0,0.07);
+      --accent-dark: #5A4F7A;
+      --card-bg: #FFFFFF;
+      --col-red: #C0392B;
+      --col-blue: #2471A3;
+      --col-green: #1E8449;
+      --col-yellow: #C9A800;
+      --shadow: rgba(0, 0, 0, 0.07);
     }
 
     /* ── Dark theme ── */
     [data-theme="dark"] {
-      --bg:           #1A1917;
-      --surface:      #242220;
-      --border:       #3A3733;
-      --text:         #E8E4DC;
-      --text-muted:   #9A9590;
-      --accent:       #9C8FC0;
+      --bg: #1A1917;
+      --surface: #242220;
+      --border: #3A3733;
+      --text: #E8E4DC;
+      --text-muted: #9A9590;
+      --accent: #9C8FC0;
       --accent-light: #27233A;
-      --accent-dark:  #BEB0DE;
-      --card-bg:      #242220;
-      --col-red:      #E05C4B;
-      --col-blue:     #4A9FD4;
-      --col-green:    #4CAF70;
-      --col-yellow:   #E0B830;
-      --shadow:       rgba(0,0,0,0.3);
+      --accent-dark: #BEB0DE;
+      --card-bg: #242220;
+      --col-red: #E05C4B;
+      --col-blue: #4A9FD4;
+      --col-green: #4CAF70;
+      --col-yellow: #E0B830;
+      --shadow: rgba(0, 0, 0, 0.3);
     }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
       background: var(--bg);
@@ -61,31 +70,51 @@
     /* ── Theme toggle ── */
     #theme-btn {
       position: fixed;
-      top: 14px; right: 14px;
+      top: 14px;
+      right: 14px;
       z-index: 200;
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 8px;
-      width: 36px; height: 36px;
+      width: 36px;
+      height: 36px;
       font-size: 15px;
       cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       box-shadow: 0 1px 6px var(--shadow);
       transition: background 0.2s;
     }
-    #theme-btn:hover { background: var(--surface); }
+
+    #theme-btn:hover {
+      background: var(--surface);
+    }
 
     /* ── Screens ── */
-    .screen { display: none; width: 100%; max-width: 600px; }
+    .screen {
+      display: none;
+      width: 100%;
+      max-width: 600px;
+    }
+
     .screen.active {
       display: flex;
       flex-direction: column;
       align-items: center;
       animation: fadeUp 0.28s ease;
     }
+
     @keyframes fadeUp {
-      from { opacity:0; transform:translateY(12px); }
-      to   { opacity:1; transform:translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     /* ── Card ── */
@@ -101,561 +130,774 @@
     /* ── Typography ── */
     .eyebrow {
       font-family: 'DM Mono', monospace;
-      font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
-      color: var(--accent); margin-bottom: 20px;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
     }
-    h2 { font-size: 20px; font-weight: 600; line-height: 1.3; margin-bottom: 10px; }
+
+    h2 {
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.3;
+      margin-bottom: 10px;
+    }
+
     .subtitle {
-      font-size: 14px; color: var(--text-muted); line-height: 1.7; margin-bottom: 26px;
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 26px;
     }
 
     /* ── Instruction list ── */
-    .ilist { list-style: none; margin-bottom: 26px; }
+    .ilist {
+      list-style: none;
+      margin-bottom: 26px;
+    }
+
     .ilist li {
-      display: flex; align-items: flex-start; gap: 12px;
-      padding: 12px 14px; border-radius: 10px;
-      background: var(--accent-light); border: 1px solid var(--border);
-      margin-bottom: 8px; font-size: 13.5px; line-height: 1.65; color: var(--text);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: var(--accent-light);
+      border: 1px solid var(--border);
+      margin-bottom: 8px;
+      font-size: 13.5px;
+      line-height: 1.65;
+      color: var(--text);
     }
+
     .ilist .num {
-      font-family: 'DM Mono', monospace; font-size: 9.5px;
-      background: var(--accent); color: #fff; border-radius: 50%;
-      width: 20px; height: 20px; display: flex; align-items: center;
-      justify-content: center; flex-shrink: 0; margin-top: 2px;
+      font-family: 'DM Mono', monospace;
+      font-size: 9.5px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
     }
+
     .pill {
-      background: var(--card-bg); border: 1px solid var(--border);
-      border-radius: 4px; padding: 1px 6px;
-      font-family: 'DM Mono', monospace; font-size: 11.5px; color: var(--accent-dark);
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11.5px;
+      color: var(--accent-dark);
     }
 
     /* ── Button ── */
     .btn {
-      display: flex; align-items: center; justify-content: center; gap: 6px;
-      width: 100%; padding: 14px 20px; border-radius: 10px; border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: 10px;
+      border: none;
       font-family: 'DM Sans', Arial, sans-serif;
-      font-size: 15px; font-weight: 500;
-      cursor: pointer; touch-action: manipulation; -webkit-appearance: none;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-appearance: none;
       transition: background 0.18s, transform 0.1s;
     }
-    .btn:active { transform: scale(0.98); opacity: 0.88; }
-    .btn-primary {
-      background: var(--accent); color: #fff;
-      box-shadow: 0 3px 14px rgba(124,111,160,0.35);
+
+    .btn:active {
+      transform: scale(0.98);
+      opacity: 0.88;
     }
-    .btn-primary:hover { background: var(--accent-dark); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 3px 14px rgba(124, 111, 160, 0.35);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-dark);
+    }
 
     /* ── Trial chrome ── */
     .trial-top {
-      width: 100%; display: flex; align-items: center;
-      justify-content: space-between; margin-bottom: 14px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
     }
+
     .block-badge {
-      font-family: 'DM Mono', monospace; font-size: 10px;
-      letter-spacing: 0.12em; text-transform: uppercase;
-      background: var(--accent-light); color: var(--accent-dark);
-      border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: var(--accent-light);
+      color: var(--accent-dark);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 4px 12px;
     }
+
     .trial-ctr {
-      font-family: 'DM Mono', monospace; font-size: 10.5px; color: var(--text-muted);
+      font-family: 'DM Mono', monospace;
+      font-size: 10.5px;
+      color: var(--text-muted);
     }
+
     .prog-wrap {
-      width: 100%; height: 3px; background: var(--surface);
-      border-radius: 99px; margin-bottom: 26px; overflow: hidden;
+      width: 100%;
+      height: 3px;
+      background: var(--surface);
+      border-radius: 99px;
+      margin-bottom: 26px;
+      overflow: hidden;
     }
+
     .prog-fill {
-      height: 100%; background: var(--accent);
-      border-radius: 99px; transition: width 0.25s ease;
+      height: 100%;
+      background: var(--accent);
+      border-radius: 99px;
+      transition: width 0.25s ease;
     }
 
     /* ── Stimulus ── */
     .stimulus-area {
-      min-height: 96px; display: flex;
-      align-items: center; justify-content: center;
-      width: 100%; padding: 8px 0;
+      min-height: 96px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 8px 0;
     }
+
     #fixation {
-      font-size: 34px; color: var(--text-muted);
-      font-weight: 300; user-select: none; line-height: 1;
+      font-size: 34px;
+      color: var(--text-muted);
+      font-weight: 300;
+      user-select: none;
+      line-height: 1;
     }
+
     #stimulus-word {
       font-family: "Times New Roman", Times, Georgia, serif;
-      font-size: 34px; font-weight: bold;
-      letter-spacing: 0.06em; text-transform: uppercase;
-      text-align: center; user-select: none; display: none; line-height: 1;
+      font-size: 34px;
+      font-weight: bold;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-align: center;
+      user-select: none;
+      display: none;
+      line-height: 1;
     }
 
     /* ── Colour buttons ── */
     .color-buttons {
-      display: flex; gap: 18px; margin-top: 26px;
-      width: 100%; justify-content: center;
+      display: flex;
+      gap: 18px;
+      margin-top: 26px;
+      width: 100%;
+      justify-content: center;
     }
+
     .color-btn {
-      width: 62px; height: 62px; border-radius: 50%;
-      border: 3px solid rgba(255,255,255,0.22);
-      cursor: pointer; flex-shrink: 0; outline: none;
-      -webkit-appearance: none; touch-action: manipulation;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      border: 3px solid rgba(255, 255, 255, 0.22);
+      cursor: pointer;
+      flex-shrink: 0;
+      outline: none;
+      -webkit-appearance: none;
+      touch-action: manipulation;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
       transition: transform 0.1s, box-shadow 0.12s;
       position: relative;
     }
+
     .color-btn::after {
       content: "";
-      position: absolute; inset: -6px;
+      position: absolute;
+      inset: -6px;
       border-radius: 50%;
     }
-    .color-btn:hover  { transform: scale(1.1); box-shadow: 0 6px 18px rgba(0,0,0,0.25); }
-    .color-btn:active { transform: scale(0.91); box-shadow: 0 1px 6px rgba(0,0,0,0.15); }
-    .color-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
-    .color-btn[data-color="RED"]    { background: var(--col-red); }
-    .color-btn[data-color="BLUE"]   { background: var(--col-blue); }
-    .color-btn[data-color="GREEN"]  { background: var(--col-green); }
-    .color-btn[data-color="YELLOW"] { background: var(--col-yellow); }
+
+    .color-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+    }
+
+    .color-btn:active {
+      transform: scale(0.91);
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .color-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .color-btn[data-color="RED"] {
+      background: var(--col-red);
+    }
+
+    .color-btn[data-color="BLUE"] {
+      background: var(--col-blue);
+    }
+
+    .color-btn[data-color="GREEN"] {
+      background: var(--col-green);
+    }
+
+    .color-btn[data-color="YELLOW"] {
+      background: var(--col-yellow);
+    }
 
     /* ── Timer bar ── */
-    .timer-section { width: 100%; margin-top: 18px; display: none; }
+    .timer-section {
+      width: 100%;
+      margin-top: 18px;
+      display: none;
+    }
+
     .timer-label {
-      font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-muted);
-      letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 5px;
-      display: flex; justify-content: space-between;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+      display: flex;
+      justify-content: space-between;
     }
+
     .timer-bar-wrap {
-      width: 100%; height: 4px; background: var(--surface);
-      border-radius: 99px; overflow: hidden;
+      width: 100%;
+      height: 4px;
+      background: var(--surface);
+      border-radius: 99px;
+      overflow: hidden;
     }
-    #timer-bar { height: 100%; border-radius: 99px; background: var(--accent); width: 100%; }
+
+    #timer-bar {
+      height: 100%;
+      border-radius: 99px;
+      background: var(--accent);
+      width: 100%;
+    }
 
     /* ── Break screen ── */
-    .break-icon { font-size: 34px; margin-bottom: 14px; text-align: center; }
-    .info-box {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 10px; padding: 14px 18px;
-      font-size: 13.5px; color: var(--text-muted);
-      line-height: 1.7; margin-bottom: 22px;
+    .break-icon {
+      font-size: 34px;
+      margin-bottom: 14px;
+      text-align: center;
     }
-    .info-box strong { color: var(--text); }
+
+    .info-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 22px;
+    }
+
+    .info-box strong {
+      color: var(--text);
+    }
 
     /* ── Saving screen ── */
     .saving-box {
-      text-align: center; padding: 44px 20px;
-      display: flex; flex-direction: column; align-items: center;
+      text-align: center;
+      padding: 44px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    .saving-box h2 { font-size: 20px; margin-bottom: 8px; }
-    .saving-box p  { font-size: 14px; color: var(--text-muted); }
+
+    .saving-box h2 {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
+    .saving-box p {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
     .spinner {
-      width: 36px; height: 36px;
-      border: 3px solid var(--border); border-top-color: var(--accent);
-      border-radius: 50%; animation: spin .72s linear infinite; margin-bottom: 18px;
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .72s linear infinite;
+      margin-bottom: 18px;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
 
     /* ── Responsive ── */
     @media (max-width: 480px) {
-      body { padding: 14px 12px 28px; }
-      .card { padding: 22px 18px; }
-      .color-btn { width: 54px; height: 54px; }
-      .color-buttons { gap: 12px; }
-      #stimulus-word { font-size: 28px; }
-      h2 { font-size: 18px; }
-      #theme-btn { top: 10px; right: 10px; }
+      body {
+        padding: 14px 12px 28px;
+      }
+
+      .card {
+        padding: 22px 18px;
+      }
+
+      .color-btn {
+        width: 54px;
+        height: 54px;
+      }
+
+      .color-buttons {
+        gap: 12px;
+      }
+
+      #stimulus-word {
+        font-size: 28px;
+      }
+
+      h2 {
+        font-size: 18px;
+      }
+
+      #theme-btn {
+        top: 10px;
+        right: 10px;
+      }
     }
+
     @media (max-width: 360px) {
-      .color-btn { width: 48px; height: 48px; }
-      .color-buttons { gap: 8px; }
+      .color-btn {
+        width: 48px;
+        height: 48px;
+      }
+
+      .color-buttons {
+        gap: 8px;
+      }
     }
   </style>
 </head>
+
 <body>
 
-<button id="theme-btn" title="Toggle theme" onclick="toggleTheme()">🌙</button>
+  <button id="theme-btn" title="Toggle theme" onclick="toggleTheme()">🌙</button>
 
-<!-- ── Intro / block-intro ── -->
-<div id="s-intro" class="screen active">
-  <div class="card">
-    <p class="eyebrow" id="intro-eyebrow">Cognitive Research Lab</p>
-    <h2 id="intro-title">Stroop Color-Word Test</h2>
-    <p class="subtitle" id="intro-sub"></p>
-    <ul class="ilist" id="intro-list"></ul>
-    <div id="intro-tc"></div>
-    <button class="btn btn-primary" id="intro-btn">Begin Test</button>
+  <!-- ── Intro / block-intro ── -->
+  <div id="s-intro" class="screen active">
+    <div class="card">
+      <p class="eyebrow" id="intro-eyebrow">Cognitive Research Lab</p>
+      <h2 id="intro-title">Stroop Color-Word Test</h2>
+      <p class="subtitle" id="intro-sub"></p>
+      <ul class="ilist" id="intro-list"></ul>
+      <div id="intro-tc"></div>
+      <button class="btn btn-primary" id="intro-btn">Begin Test</button>
+    </div>
   </div>
-</div>
 
-<!-- ── Trial ── -->
-<div id="s-trial" class="screen">
-  <div class="trial-top">
-    <span class="block-badge" id="block-badge">Section 1 of 3</span>
-    <span class="trial-ctr"   id="trial-ctr">Trial 1 / 20</span>
-  </div>
-  <div class="prog-wrap"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
-
-  <div class="card" style="display:flex;flex-direction:column;align-items:center;">
-    <div class="stimulus-area">
-      <div id="fixation">+</div>
-      <div id="stimulus-word"></div>
+  <!-- ── Trial ── -->
+  <div id="s-trial" class="screen">
+    <div class="trial-top">
+      <span class="block-badge" id="block-badge">Section 1 of 3</span>
+      <span class="trial-ctr" id="trial-ctr">Trial 1 / 20</span>
+    </div>
+    <div class="prog-wrap">
+      <div class="prog-fill" id="prog-fill" style="width:0%"></div>
     </div>
 
-    <div class="color-buttons" id="color-buttons" style="visibility:hidden;">
-      <button class="color-btn" data-color="RED"    onclick="handleResponse('RED')"></button>
-      <button class="color-btn" data-color="BLUE"   onclick="handleResponse('BLUE')"></button>
-      <button class="color-btn" data-color="GREEN"  onclick="handleResponse('GREEN')"></button>
-      <button class="color-btn" data-color="YELLOW" onclick="handleResponse('YELLOW')"></button>
-    </div>
-
-    <div class="timer-section" id="timer-section">
-      <div class="timer-label">
-        <span>Time remaining</span>
-        <span id="timer-disp">--</span>
+    <div class="card" style="display:flex;flex-direction:column;align-items:center;">
+      <div class="stimulus-area">
+        <div id="fixation">+</div>
+        <div id="stimulus-word"></div>
       </div>
-      <div class="timer-bar-wrap"><div id="timer-bar"></div></div>
+
+      <div class="color-buttons" id="color-buttons" style="visibility:hidden;">
+        <button class="color-btn" data-color="RED" onclick="handleResponse('RED')"></button>
+        <button class="color-btn" data-color="BLUE" onclick="handleResponse('BLUE')"></button>
+        <button class="color-btn" data-color="GREEN" onclick="handleResponse('GREEN')"></button>
+        <button class="color-btn" data-color="YELLOW" onclick="handleResponse('YELLOW')"></button>
+      </div>
+
+      <div class="timer-section" id="timer-section">
+        <div class="timer-label">
+          <span>Time remaining</span>
+          <span id="timer-disp">--</span>
+        </div>
+        <div class="timer-bar-wrap">
+          <div id="timer-bar"></div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- ── Break ── -->
-<div id="s-break" class="screen">
-  <div class="card" style="text-align:center;">
-    <div class="break-icon">☕</div>
-    <h2 id="break-title">Section Complete</h2>
-    <p class="subtitle">Take a short break if needed, then continue when ready.</p>
-    <div class="info-box" id="break-info"></div>
-    <button class="btn btn-primary" onclick="onBreakContinue()">Continue →</button>
-  </div>
-</div>
-
-<!-- ── Saving ── -->
-<div id="s-saving" class="screen">
-  <div class="card">
-    <div class="saving-box">
-      <div class="spinner"></div>
-      <h2>All done!</h2>
-      <p id="saving-msg">Saving your results…</p>
+  <!-- ── Break ── -->
+  <div id="s-break" class="screen">
+    <div class="card" style="text-align:center;">
+      <div class="break-icon">☕</div>
+      <h2 id="break-title">Section Complete</h2>
+      <p class="subtitle">Take a short break if needed, then continue when ready.</p>
+      <div class="info-box" id="break-info"></div>
+      <button class="btn btn-primary" onclick="onBreakContinue()">Continue →</button>
     </div>
   </div>
-</div>
 
-<script>
-/* ================================================================
-   Config — injected by Python before </head>
-   ================================================================ */
-const CFG = window.STROOP_CONFIG || {
-  session_id:"test", participant_id:"TEST",
-  time_reduction_ms:120, api_url:"http://localhost:8599/submit"
-};
+  <!-- ── Saving ── -->
+  <div id="s-saving" class="screen">
+    <div class="card">
+      <div class="saving-box">
+        <div class="spinner"></div>
+        <h2>All done!</h2>
+        <p id="saving-msg">Saving your results…</p>
+      </div>
+    </div>
+  </div>
 
-/* ================================================================
-   Theme
-   ================================================================ */
-(function(){
-  const saved = localStorage.getItem("stroop_theme") || "light";
-  document.documentElement.setAttribute("data-theme", saved);
-  document.getElementById("theme-btn").textContent = saved === "dark" ? "☀️" : "🌙";
-})();
+  <script>
+    /* ================================================================
+       Config — injected by Python before </head>
+       ================================================================ */
+    const CFG = window.STROOP_CONFIG || {
+      session_id: "test", participant_id: "TEST",
+      time_reduction_ms: 120, api_url: "http://localhost:8599/submit"
+    };
 
-function toggleTheme(){
-  const html = document.documentElement;
-  const next = html.getAttribute("data-theme") === "dark" ? "light" : "dark";
-  html.setAttribute("data-theme", next);
-  localStorage.setItem("stroop_theme", next);
-  document.getElementById("theme-btn").textContent = next === "dark" ? "☀️" : "🌙";
-  // Also apply theme to the parent Streamlit page
-  try {
-    window.parent.document.documentElement.setAttribute("data-stroop-theme", next);
-  } catch(e) {
-    // Cross-origin — cannot reach parent; theme only applies inside iframe
-  }
-}
+    /* ================================================================
+       Theme
+       ================================================================ */
+    (function () {
+      const saved = localStorage.getItem("stroop_theme") || "light";
+      document.documentElement.setAttribute("data-theme", saved);
+      document.getElementById("theme-btn").textContent = saved === "dark" ? "☀️" : "🌙";
+    })();
 
-/* ================================================================
-   Constants
-   ================================================================ */
-const COLORS   = ["RED","BLUE","GREEN","YELLOW"];
-const BLK_TYPE = ["congruent","incongruent","stress"];
-const PER      = 20;
-const FIX_MIN  = 300, FIX_MAX = 500;
-
-/* ================================================================
-   State
-   ================================================================ */
-let block=0, trialIdx=0, queue=[], allTrials=[];
-let startTime=null, timeLimit=null;
-let timerIv=null, toTO=null, canRespond=false;
-
-/* ================================================================
-   Utils
-   ================================================================ */
-function shuffle(a){
-  const b=[...a]; let i=b.length;
-  while(i--){const j=0|Math.random()*(i+1);[b[i],b[j]]=[b[j],b[i]];}
-  return b;
-}
-function rnd(lo,hi){ return lo+(0|Math.random()*(hi-lo+1)); }
-function show(id){
-  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-}
-
-/* ================================================================
-   Trial generation — strict congruence rules
-   ================================================================ */
-function buildPool(type){
-  if(type==="congruent"){
-    const p=[];
-    for(let r=0;r<5;r++) COLORS.forEach(c=>p.push({word:c,color:c}));
-    return p;
-  }
-  const inc=[];
-  COLORS.forEach(w=>COLORS.forEach(c=>{ if(c!==w) inc.push({word:w,color:c}); }));
-  return shuffle(inc).concat(shuffle(inc).slice(0,8));
-}
-
-function constrainShuffle(arr,type){
-  const con=(type==="congruent");
-  let a=shuffle(arr).filter(t=>con?(t.word===t.color):(t.word!==t.color));
-  for(let p=0;p<300;p++){
-    let dirty=false;
-    for(let i=2;i<a.length;i++){
-      if(a[i].word===a[i-1].word&&a[i].word===a[i-2].word){
-        let ok=false;
-        for(let j=i+1;j<a.length;j++){
-          if(a[j].word!==a[i].word){[a[i],a[j]]=[a[j],a[i]];dirty=ok=true;break;}
-        }
-        if(!ok) for(let k=0;k<i-2;k++){
-          if(a[k].word!==a[i-1].word){[a[i],a[k]]=[a[k],a[i]];dirty=true;break;}
-        }
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute("data-theme") === "dark" ? "light" : "dark";
+      html.setAttribute("data-theme", next);
+      localStorage.setItem("stroop_theme", next);
+      document.getElementById("theme-btn").textContent = next === "dark" ? "☀️" : "🌙";
+      // Also apply theme to the parent Streamlit page
+      try {
+        window.parent.document.documentElement.setAttribute("data-stroop-theme", next);
+      } catch (e) {
+        // Cross-origin — cannot reach parent; theme only applies inside iframe
       }
     }
-    if(!dirty) break;
-  }
-  return a.filter(t=>con?(t.word===t.color):(t.word!==t.color));
-}
 
-function makeTrials(type){
-  let t=constrainShuffle(buildPool(type),type);
-  while(t.length<PER) t=t.concat(constrainShuffle(buildPool(type),type));
-  return t.slice(0,PER);
-}
+    /* ================================================================
+       Constants
+       ================================================================ */
+    const COLORS = ["RED", "BLUE", "GREEN", "YELLOW"];
+    const BLK_TYPE = ["congruent", "incongruent", "stress"];
+    const PER = 20;
+    const FIX_MIN = 300, FIX_MAX = 500;
 
-/* ================================================================
-   Intro / block-intro screen
-   ================================================================ */
-const INTRO_DATA = [
-  {
-    eyebrow: "Cognitive Research Lab",
-    title:   "Stroop Color-Word Test",
-    sub:     "A color word will appear in colored ink. Select the <strong>color of the ink</strong>, not what the word says.",
-    items: [
-      ["1","Respond to the <strong>ink color</strong> — ignore the word itself. Example: if you see <span style='color:#2471A3;font-weight:600'>RED</span>, press the <strong>blue</strong> circle."],
-      ["2","<strong>Sections 1 &amp; 2</strong> have <span class='pill'>no time limit</span>. Work at a steady pace."],
-      ["3","<strong>Section 3</strong> has a <span class='pill'>personal time limit</span> based on your Section 2 speed."],
-      ["4","Press the <strong>coloured circle</strong> that matches the ink. Buttons have no text."],
-    ],
-    btn: "Begin Section 1",
-  },
-  {
-    eyebrow: "Section 2 of 3",
-    title:   "Interference Block",
-    sub:     "The word and ink color will <strong>no longer match</strong>. Focus on the ink color only — ignore what the word says.",
-    items:   [],
-    btn:     "Start Section 2",
-  },
-  {
-    eyebrow: "Section 3 of 3",
-    title:   "Timed Block",
-    sub:     "Same as Section 2, but each trial has a time limit. Respond before the bar runs out.",
-    items:   [],
-    btn:     "Start Section 3",
-  },
-];
+    /* ================================================================
+       State
+       ================================================================ */
+    let block = 0, trialIdx = 0, queue = [], allTrials = [];
+    let startTime = null, timeLimit = null;
+    let timerIv = null, toTO = null, canRespond = false;
 
-function setupIntro(){
-  const d = INTRO_DATA[block];
-  document.getElementById("intro-eyebrow").textContent = d.eyebrow;
-  document.getElementById("intro-title").textContent   = d.title;
-  document.getElementById("intro-sub").innerHTML       = d.sub;
+    /* ================================================================
+       Utils
+       ================================================================ */
+    function shuffle(a) {
+      const b = [...a]; let i = b.length;
+      while (i--) { const j = 0 | Math.random() * (i + 1);[b[i], b[j]] = [b[j], b[i]]; }
+      return b;
+    }
+    function rnd(lo, hi) { return lo + (0 | Math.random() * (hi - lo + 1)); }
+    function show(id) {
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+    }
 
-  const ul = document.getElementById("intro-list");
-  ul.innerHTML = "";
-  ul.style.display = d.items.length ? "block" : "none";
-  d.items.forEach(([n,txt])=>{
-    ul.insertAdjacentHTML("beforeend",
-      `<li><span class="num">${n}</span><span>${txt}</span></li>`);
-  });
+    /* ================================================================
+       Trial generation — strict congruence rules
+       ================================================================ */
+    function buildPool(type) {
+      if (type === "congruent") {
+        const p = [];
+        for (let r = 0; r < 5; r++) COLORS.forEach(c => p.push({ word: c, color: c }));
+        return p;
+      }
+      const inc = [];
+      COLORS.forEach(w => COLORS.forEach(c => { if (c !== w) inc.push({ word: w, color: c }); }));
+      return shuffle(inc).concat(shuffle(inc).slice(0, 8));
+    }
 
-  const tc = document.getElementById("intro-tc");
-  tc.innerHTML = "";
-  if(block===2 && timeLimit){
-    tc.innerHTML = `<div class="info-box" style="margin-bottom:20px">
+    function constrainShuffle(arr, type) {
+      const con = (type === "congruent");
+      let a = shuffle(arr).filter(t => con ? (t.word === t.color) : (t.word !== t.color));
+      for (let p = 0; p < 300; p++) {
+        let dirty = false;
+        for (let i = 2; i < a.length; i++) {
+          if (a[i].word === a[i - 1].word && a[i].word === a[i - 2].word) {
+            let ok = false;
+            for (let j = i + 1; j < a.length; j++) {
+              if (a[j].word !== a[i].word) { [a[i], a[j]] = [a[j], a[i]]; dirty = ok = true; break; }
+            }
+            if (!ok) for (let k = 0; k < i - 2; k++) {
+              if (a[k].word !== a[i - 1].word) { [a[i], a[k]] = [a[k], a[i]]; dirty = true; break; }
+            }
+          }
+        }
+        if (!dirty) break;
+      }
+      return a.filter(t => con ? (t.word === t.color) : (t.word !== t.color));
+    }
+
+    function makeTrials(type) {
+      let t = constrainShuffle(buildPool(type), type);
+      while (t.length < PER) t = t.concat(constrainShuffle(buildPool(type), type));
+      return t.slice(0, PER);
+    }
+
+    /* ================================================================
+       Intro / block-intro screen
+       ================================================================ */
+    const INTRO_DATA = [
+      {
+        eyebrow: "Cognitive Research Lab",
+        title: "Stroop Color-Word Test",
+        sub: "A color word will appear in colored ink. Select the <strong>color of the ink</strong>, not what the word says.",
+        items: [
+          ["1", "Respond to the <strong>ink color</strong> — ignore the word itself. Example: if you see <span style='color:#2471A3;font-weight:600'>RED</span>, press the <strong>blue</strong> circle."],
+          ["2", "<strong>Sections 1 &amp; 2</strong> have <span class='pill'>no time limit</span>. Work at a steady pace."],
+          ["3", "<strong>Section 3</strong> has a <span class='pill'>personal time limit</span> based on your Section 2 speed."],
+          ["4", "Press the <strong>coloured circle</strong> that matches the ink. Buttons have no text."],
+        ],
+        btn: "Begin Section 1",
+      },
+      {
+        eyebrow: "Section 2 of 3",
+        title: "Interference Block",
+        sub: "The word and ink color will <strong>no longer match</strong>. Focus on the ink color only — ignore what the word says.",
+        items: [],
+        btn: "Start Section 2",
+      },
+      {
+        eyebrow: "Section 3 of 3",
+        title: "Timed Block",
+        sub: "Same as Section 2, but each trial has a time limit. Respond before the bar runs out.",
+        items: [],
+        btn: "Start Section 3",
+      },
+    ];
+
+    function setupIntro() {
+      const d = INTRO_DATA[block];
+      document.getElementById("intro-eyebrow").textContent = d.eyebrow;
+      document.getElementById("intro-title").textContent = d.title;
+      document.getElementById("intro-sub").innerHTML = d.sub;
+
+      const ul = document.getElementById("intro-list");
+      ul.innerHTML = "";
+      ul.style.display = d.items.length ? "block" : "none";
+      d.items.forEach(([n, txt]) => {
+        ul.insertAdjacentHTML("beforeend",
+          `<li><span class="num">${n}</span><span>${txt}</span></li>`);
+      });
+
+      const tc = document.getElementById("intro-tc");
+      tc.innerHTML = "";
+      if (block === 2 && timeLimit) {
+        tc.innerHTML = `<div class="info-box" style="margin-bottom:20px">
       <strong>Your time limit:</strong> ${Math.round(timeLimit)} ms per trial</div>`;
-  }
+      }
 
-  document.getElementById("intro-btn").textContent = d.btn;
-  document.getElementById("intro-btn").onclick = beginBlock;
-  show("s-intro");
-}
+      document.getElementById("intro-btn").textContent = d.btn;
+      document.getElementById("intro-btn").onclick = beginBlock;
+      show("s-intro");
+    }
 
-/* ================================================================
-   Block flow
-   ================================================================ */
-function beginBlock(){
-  trialIdx=0; canRespond=false;
-  queue=makeTrials(BLK_TYPE[block]);
-  document.getElementById("block-badge").textContent=`Section ${block+1} of 3`;
-  show("s-trial");
-  nextTrial();
-}
+    /* ================================================================
+       Block flow
+       ================================================================ */
+    function beginBlock() {
+      trialIdx = 0; canRespond = false;
+      queue = makeTrials(BLK_TYPE[block]);
+      document.getElementById("block-badge").textContent = `Section ${block + 1} of 3`;
+      show("s-trial");
+      nextTrial();
+    }
 
-function nextTrial(){
-  if(trialIdx>=PER){ blockEnd(); return; }
-  document.getElementById("prog-fill").style.width=(trialIdx/PER*100)+"%";
-  document.getElementById("trial-ctr").textContent=`Trial ${trialIdx+1} / ${PER}`;
-  showFixation();
-}
+    function nextTrial() {
+      if (trialIdx >= PER) { blockEnd(); return; }
+      document.getElementById("prog-fill").style.width = (trialIdx / PER * 100) + "%";
+      document.getElementById("trial-ctr").textContent = `Trial ${trialIdx + 1} / ${PER}`;
+      showFixation();
+    }
 
-/* ── Fixation ── */
-function showFixation(){
-  canRespond=false; clearTimers();
-  document.getElementById("fixation").style.display="flex";
-  document.getElementById("stimulus-word").style.display="none";
-  document.getElementById("color-buttons").style.visibility="hidden";
-  document.getElementById("timer-section").style.display="none";
-  toTO=setTimeout(showStimulus, rnd(FIX_MIN,FIX_MAX));
-}
+    /* ── Fixation ── */
+    function showFixation() {
+      canRespond = false; clearTimers();
+      document.getElementById("fixation").style.display = "flex";
+      document.getElementById("stimulus-word").style.display = "none";
+      document.getElementById("color-buttons").style.visibility = "hidden";
+      document.getElementById("timer-section").style.display = "none";
+      toTO = setTimeout(showStimulus, rnd(FIX_MIN, FIX_MAX));
+    }
 
-/* ── Stimulus ── */
-function showStimulus(){
-  const t=queue[trialIdx];
-  const wrap=document.getElementById("color-buttons");
-  shuffle([...wrap.querySelectorAll(".color-btn")]).forEach(b=>wrap.appendChild(b));
+    /* ── Stimulus ── */
+    function showStimulus() {
+      const t = queue[trialIdx];
+      const wrap = document.getElementById("color-buttons");
+      shuffle([...wrap.querySelectorAll(".color-btn")]).forEach(b => wrap.appendChild(b));
 
-  const el=document.getElementById("stimulus-word");
-  el.textContent=t.word;
-  el.style.color=`var(--col-${t.color.toLowerCase()})`;
-  el.style.display="flex";
-  document.getElementById("fixation").style.display="none";
-  document.getElementById("color-buttons").style.visibility="visible";
+      const el = document.getElementById("stimulus-word");
+      el.textContent = t.word;
+      el.style.color = `var(--col-${t.color.toLowerCase()})`;
+      el.style.display = "flex";
+      document.getElementById("fixation").style.display = "none";
+      document.getElementById("color-buttons").style.visibility = "visible";
 
-  startTime=performance.now(); canRespond=true;
+      startTime = performance.now(); canRespond = true;
 
-  if(block===2&&timeLimit){
-    document.getElementById("timer-section").style.display="block";
-    startTimer(timeLimit);
-  }
-}
+      if (block === 2 && timeLimit) {
+        document.getElementById("timer-section").style.display = "block";
+        startTimer(timeLimit);
+      }
+    }
 
-function startTimer(ms){
-  const bar=document.getElementById("timer-bar");
-  const disp=document.getElementById("timer-disp");
-  const t0=performance.now();
-  bar.style.background="var(--accent)"; bar.style.width="100%";
-  timerIv=setInterval(()=>{
-    const rem=Math.max(0,ms-(performance.now()-t0));
-    const pct=(rem/ms)*100;
-    bar.style.width=pct+"%";
-    disp.textContent=Math.ceil(rem)+" ms";
-    bar.style.background = pct<30 ? "var(--col-red)" : pct<60 ? "#E67E22" : "var(--accent)";
-  },30);
-  toTO=setTimeout(()=>{ if(canRespond) record(null,true); }, ms);
-}
+    function startTimer(ms) {
+      const bar = document.getElementById("timer-bar");
+      const disp = document.getElementById("timer-disp");
+      const t0 = performance.now();
+      bar.style.background = "var(--accent)"; bar.style.width = "100%";
+      timerIv = setInterval(() => {
+        const rem = Math.max(0, ms - (performance.now() - t0));
+        const pct = (rem / ms) * 100;
+        bar.style.width = pct + "%";
+        disp.textContent = Math.ceil(rem) + " ms";
+        bar.style.background = pct < 30 ? "var(--col-red)" : pct < 60 ? "#E67E22" : "var(--accent)";
+      }, 30);
+      toTO = setTimeout(() => { if (canRespond) record(null, true); }, ms);
+    }
 
-function clearTimers(){
-  if(timerIv){clearInterval(timerIv);timerIv=null;}
-  if(toTO){clearTimeout(toTO);toTO=null;}
-}
+    function clearTimers() {
+      if (timerIv) { clearInterval(timerIv); timerIv = null; }
+      if (toTO) { clearTimeout(toTO); toTO = null; }
+    }
 
-/* ── Response ── */
-function handleResponse(chosen){ if(canRespond) record(chosen,false); }
+    /* ── Response ── */
+    function handleResponse(chosen) { if (canRespond) record(chosen, false); }
 
-function record(chosen,missed){
-  canRespond=false; clearTimers();
-  const t=queue[trialIdx];
-  const rt=missed?null:Math.round(performance.now()-startTime);
-  allTrials.push({
-    block_number:    block+1,
-    block_type:      BLK_TYPE[block],
-    trial_number:    trialIdx+1,
-    word_shown:      t.word,
-    ink_color:       t.color,
-    user_response:   missed?null:chosen,
-    outcome:         missed?"missed":chosen===t.color?"correct":"wrong",
-    reaction_time_ms:rt,
-  });
-  trialIdx++;
-  toTO=setTimeout(nextTrial, 120);
-}
+    function record(chosen, missed) {
+      canRespond = false; clearTimers();
+      const t = queue[trialIdx];
+      const rt = missed ? null : Math.round(performance.now() - startTime);
+      allTrials.push({
+        block_number: block + 1,
+        block_type: BLK_TYPE[block],
+        trial_number: trialIdx + 1,
+        word_shown: t.word,
+        ink_color: t.color,
+        user_response: missed ? null : chosen,
+        outcome: missed ? "missed" : chosen === t.color ? "correct" : "wrong",
+        reaction_time_ms: rt,
+      });
+      trialIdx++;
+      toTO = setTimeout(nextTrial, 120);
+    }
 
-/* ── Block end ── */
-function blockEnd(){
-  clearTimers();
-  // Compute adaptive time limit from block 2 mean RT
-  if(block===1){
-    const rts=allTrials
-      .filter(t=>t.block_number===2&&t.reaction_time_ms!==null)
-      .map(t=>t.reaction_time_ms);
-    timeLimit = rts.length
-      ? Math.max(200, Math.round(rts.reduce((a,b)=>a+b,0)/rts.length - CFG.time_reduction_ms))
-      : 1500;
-  }
-  block < 2 ? showBreak() : finishTest();
-}
+    /* ── Block end ── */
+    function blockEnd() {
+      clearTimers();
+      // Compute adaptive time limit from block 2 mean RT
+      if (block === 1) {
+        const rts = allTrials
+          .filter(t => t.block_number === 2 && t.reaction_time_ms !== null)
+          .map(t => t.reaction_time_ms);
+        timeLimit = rts.length
+          ? Math.max(200, Math.round(rts.reduce((a, b) => a + b, 0) / rts.length - CFG.time_reduction_ms))
+          : 1500;
+      }
+      block < 2 ? showBreak() : finishTest();
+    }
 
-function showBreak(){
-  document.getElementById("break-title").textContent=`Section ${block+1} Complete`;
-  document.getElementById("break-info").innerHTML = block===0
-    ? "<strong>Next: Section 2</strong><br>The words and ink colors will no longer match."
-    : `<strong>Next: Section 3 (Timed)</strong><br>Your personal time limit: <strong>${timeLimit} ms</strong> per trial.`;
-  show("s-break");
-}
+    function showBreak() {
+      document.getElementById("break-title").textContent = `Section ${block + 1} Complete`;
+      document.getElementById("break-info").innerHTML = block === 0
+        ? "<strong>Next: Section 2</strong><br>The words and ink colors will no longer match."
+        : `<strong>Next: Section 3 (Timed)</strong><br>Your personal time limit: <strong>${timeLimit} ms</strong> per trial.`;
+      show("s-break");
+    }
 
-function onBreakContinue(){
-  block++;
-  setupIntro();
-}
+    function onBreakContinue() {
+      block++;
+      setupIntro();
+    }
 
-/* ================================================================
-   Finish — POST results → redirect to Streamlit done
-   ================================================================ */
-function computeSummary(){
-  const out={};
-  [1,2,3].forEach(bn=>{
-    const bt=allTrials.filter(t=>t.block_number===bn);
-    const res=bt.filter(t=>t.reaction_time_ms!==null);
-    const cor=bt.filter(t=>t.outcome==="correct");
-    out[`mean_rt_block${bn}`]=res.length?res.reduce((s,t)=>s+t.reaction_time_ms,0)/res.length:null;
-    out[`accuracy_block${bn}`]=bt.length?(cor.length/bt.length)*100:null;
-  });
-  const all=allTrials.filter(t=>t.reaction_time_ms!==null);
-  out.overall_mean_rt=all.length?all.reduce((s,t)=>s+t.reaction_time_ms,0)/all.length:null;
-  out.time_constraint_ms=timeLimit;
-  out.missed_count_block3=allTrials.filter(t=>t.block_number===3&&t.outcome==="missed").length;
-  return out;
-}
+    /* ================================================================
+       Finish — POST results → redirect to Streamlit done
+       ================================================================ */
+    function computeSummary() {
+      const out = {};
+      [1, 2, 3].forEach(bn => {
+        const bt = allTrials.filter(t => t.block_number === bn);
+        const res = bt.filter(t => t.reaction_time_ms !== null);
+        const cor = bt.filter(t => t.outcome === "correct");
+        out[`mean_rt_block${bn}`] = res.length ? res.reduce((s, t) => s + t.reaction_time_ms, 0) / res.length : null;
+        out[`accuracy_block${bn}`] = bt.length ? (cor.length / bt.length) * 100 : null;
+      });
+      const all = allTrials.filter(t => t.reaction_time_ms !== null);
+      out.overall_mean_rt = all.length ? all.reduce((s, t) => s + t.reaction_time_ms, 0) / all.length : null;
+      out.time_constraint_ms = timeLimit;
+      out.missed_count_block3 = allTrials.filter(t => t.block_number === 3 && t.outcome === "missed").length;
+      return out;
+    }
 
-function finishTest(){
-  show("s-saving");
-  fetch(CFG.api_url,{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({
-      session_id:    CFG.session_id,
-      participant_id:CFG.participant_id,
-      trials:        allTrials,
-      summary:       computeSummary(),
-    }),
-  })
-  .then(()=>{ window.parent.location.href=window.parent.location.pathname+"?test_done=1"; })
-  .catch(err=>{
-    // Even on save failure, show a friendly completion message
-    document.querySelector(".spinner").style.display="none";
-    document.querySelector(".saving-box h2").textContent="Thank you for taking the test!";
-    document.getElementById("saving-msg").textContent="Your responses have been recorded. Please let the researcher know you have finished.";
-  });
-}
+    function finishTest() {
+      show("s-saving");
+      fetch(CFG.api_url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          session_id: CFG.session_id,
+          participant_id: CFG.participant_id,
+          trials: allTrials,
+          summary: computeSummary(),
+        }),
+      })
+        .then(() => { window.parent.location.href = window.parent.location.pathname + "?test_done=1"; })
+        .catch(err => {
+          // Even on save failure, show a friendly completion message
+          document.querySelector(".spinner").style.display = "none";
+          document.querySelector(".saving-box h2").textContent = "Thank you for taking the test!";
+          document.getElementById("saving-msg").textContent = "Your responses have been recorded. Please let the researcher know you have finished.";
+        });
+    }
 
-/* ================================================================
-   Boot
-   ================================================================ */
-setupIntro();
-</script>
+    /* ================================================================
+       Boot
+       ================================================================ */
+    setupIntro();
+  </script>
 </body>
+
 </html>
